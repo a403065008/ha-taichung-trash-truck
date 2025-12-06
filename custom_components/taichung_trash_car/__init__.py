@@ -1,5 +1,6 @@
 """The Taichung Trash Car integration."""
 import logging
+import ssl
 import async_timeout
 import aiohttp
 from datetime import timedelta
@@ -22,7 +23,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # 定義 API 抓取邏輯
     async def async_update_data():
-        async with aiohttp.ClientSession() as session:
+        # 台中市政府 API 的 SSL 憑證有問題，需要跳過驗證
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        
+        connector = aiohttp.TCPConnector(ssl=ssl_context)
+        async with aiohttp.ClientSession(connector=connector) as session:
             try:
                 # 設定 10 秒超時
                 async with async_timeout.timeout(10):

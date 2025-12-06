@@ -33,8 +33,8 @@ class TaichungTrashConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         # 表單架構
         data_schema = vol.Schema({
             vol.Required(CONF_LINEID, default="15052"): str,
-            vol.Required(CONF_HOME_LAT, default=default_lat): cv.latitude,
-            vol.Required(CONF_HOME_LON, default=default_lon): cv.longitude,
+            vol.Required(CONF_HOME_LAT, default=default_lat): vol.Coerce(float),
+            vol.Required(CONF_HOME_LON, default=default_lon): vol.Coerce(float),
             vol.Required(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): vol.All(vol.Coerce(int), vol.Range(min=10, max=3600)),
         })
 
