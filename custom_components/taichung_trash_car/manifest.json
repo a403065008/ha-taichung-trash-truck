@@ -1,0 +1,10 @@
+{
+  "domain": "taichung_trash_car",
+  "name": "台中垃圾車追蹤 (自訂頻率版)",
+  "version": "1.1.0",
+  "documentation": "https://github.com/你的帳號/你的專案",
+  "dependencies": [],
+  "codeowners": ["@你的名字"],
+  "requirements": [],
+  "iot_class": "cloud_polling"
+}
