@@ -1,0 +1,24 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Taichung Trash Truck Tracker Setup",
+        "description": "Enter the Line ID of the trash truck route and your home location.",
+        "data": {
+          "lineid": "Line ID",
+          "home_lat": "Home Latitude",
+          "home_lon": "Home Longitude",
+          "update_interval": "Update Interval (seconds)"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This route is already configured"
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to API",
+      "invalid_auth": "Authentication failed",
+      "unknown": "Unknown error"
+    }
+  }
+}

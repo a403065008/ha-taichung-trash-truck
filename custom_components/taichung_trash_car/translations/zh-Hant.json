@@ -1,0 +1,24 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "台中垃圾車追蹤設定",
+        "description": "請輸入您要追蹤的垃圾車路線 ID 及家中位置。",
+        "data": {
+          "lineid": "路線 ID (LineID)",
+          "home_lat": "家中緯度",
+          "home_lon": "家中經度",
+          "update_interval": "更新間隔 (秒)"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "此路線已設定過"
+    },
+    "error": {
+      "cannot_connect": "無法連接至 API",
+      "invalid_auth": "驗證失敗",
+      "unknown": "未知錯誤"
+    }
+  }
+}
