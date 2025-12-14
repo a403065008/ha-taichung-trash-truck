@@ -10,7 +10,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DOMAIN, API_URL, CONF_LINEID, CONF_UPDATE_INTERVAL
+from .const import DOMAIN, API_URL, CONF_LINEID, CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = ["sensor"]
@@ -22,8 +22,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
-    lineid = entry.data[CONF_LINEID]
-    update_interval = entry.data.get(CONF_UPDATE_INTERVAL, 60)
+    # 監聽選項更新
+    entry.async_on_unload(entry.add_update_listener(update_listener))
+
+    # 從 options 或 data 讀取設定
+    config = entry.options or entry.data
+    lineid = config.get(CONF_LINEID)
+    update_interval = config.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
 
     # 定義 API 抓取邏輯
     async def async_update_data():
@@ -103,3 +108,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
+
+async def update_listener(hass: HomeAssistant, entry: ConfigEntry):
+    """Handle options update."""
+    await hass.config_entries.async_reload(entry.entry_id)
