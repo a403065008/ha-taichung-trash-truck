@@ -38,9 +38,9 @@ class TaichungTrashConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         # 表單架構
         data_schema = vol.Schema({
-            vol.Required(CONF_LINEID, default="15052"): str,
-            vol.Optional(CONF_HOME_LAT, default=default_lat): vol.Coerce(float),
-            vol.Optional(CONF_HOME_LON, default=default_lon): vol.Coerce(float),
+            vol.Required(CONF_LINEID): str,
+            vol.Optional(CONF_HOME_LAT): vol.Coerce(float),
+            vol.Optional(CONF_HOME_LON): vol.Coerce(float),
             vol.Required(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): vol.All(vol.Coerce(int), vol.Range(min=10, max=3600)),
         })
 
@@ -70,15 +70,15 @@ class TaichungTrashOptionsFlowHandler(config_entries.OptionsFlow):
         data_schema = vol.Schema({
             vol.Required(
                 CONF_LINEID, 
-                default=self.config_entry.options.get(CONF_LINEID, self.config_entry.data.get(CONF_LINEID, "15052"))
+                default=self.config_entry.options.get(CONF_LINEID, self.config_entry.data.get(CONF_LINEID))
             ): str,
             vol.Optional(
                 CONF_HOME_LAT, 
-                default=self.config_entry.options.get(CONF_HOME_LAT, self.config_entry.data.get(CONF_HOME_LAT, default_lat))
+                default=self.config_entry.options.get(CONF_HOME_LAT, self.config_entry.data.get(CONF_HOME_LAT))
             ): vol.Coerce(float),
             vol.Optional(
                 CONF_HOME_LON, 
-                default=self.config_entry.options.get(CONF_HOME_LON, self.config_entry.data.get(CONF_HOME_LON, default_lon))
+                default=self.config_entry.options.get(CONF_HOME_LON, self.config_entry.data.get(CONF_HOME_LON))
             ): vol.Coerce(float),
             vol.Required(
                 CONF_UPDATE_INTERVAL, 
