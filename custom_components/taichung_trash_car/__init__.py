@@ -10,7 +10,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DOMAIN, API_URL, CONF_LINEID, CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL
+from .const import DOMAIN, API_URL, CONF_LINEID, CONF_PLATE_N, CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = ["sensor"]
@@ -28,7 +28,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # 從 options 或 data 讀取設定
     config = entry.options or entry.data
     lineid = config.get(CONF_LINEID)
+    plate_n = config.get(CONF_PLATE_N)
     update_interval = config.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
+    
+    entry_id = entry.entry_id
 
     # 定義 API 抓取邏輯
     async def async_update_data():
@@ -46,47 +49,48 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                         response.raise_for_status()
                         data = await response.json()
                         
-                        # 篩選特定 LineID
-                        target_truck = next(
-                            (item for item in data if item.get("lineid") == lineid), 
-                            None
-                        )
+                        # 篩選特定 LineID 或車牌
+                        if lineid:
+                            target_truck = next(
+                                (item for item in data if item.get("lineid") == lineid), 
+                                None
+                            )
+                        elif plate_n:
+                            target_truck = next(
+                                (item for item in data if item.get("car") == plate_n),
+                                None
+                            )
+                        else:
+                            target_truck = None
                         
                         # 儲存成功取得的資料
                         if target_truck:
-                            _last_successful_data[lineid] = target_truck
+                            _last_successful_data[entry_id] = target_truck
                             return target_truck
                         else:
                             # 找不到車(可能未發車)，回傳 None
                             return None
 
             except asyncio.TimeoutError:
-                _LOGGER.warning("API 請求超時，使用上次成功的資料")
-                # 超時時返回上次成功的資料，避免 unavailable
-                if lineid in _last_successful_data:
-                    return _last_successful_data[lineid]
-                return None
+                _LOGGER.warning(f"API request timed out for {entry_id}, using last successful data")
+                return _last_successful_data.get(entry_id)
                 
             except aiohttp.ClientError as err:
-                _LOGGER.warning(f"API 連線錯誤: {err}，使用上次成功的資料")
-                # 連線錯誤時返回上次成功的資料
-                if lineid in _last_successful_data:
-                    return _last_successful_data[lineid]
-                return None
+                _LOGGER.warning(f"API connection error for {entry_id}: {err}, using last successful data")
+                return _last_successful_data.get(entry_id)
                 
             except Exception as err:
-                _LOGGER.error(f"未預期的錯誤: {err}")
-                # 其他錯誤也嘗試返回上次資料
-                if lineid in _last_successful_data:
-                    return _last_successful_data[lineid]
+                _LOGGER.error(f"Unexpected error for {entry_id}: {err}")
+                if entry_id in _last_successful_data:
+                    return _last_successful_data.get(entry_id)
                 # 只有在完全沒有舊資料時才報錯
-                raise UpdateFailed(f"Error communicating with API: {err}")
+                raise UpdateFailed(f"Error communicating with API for {entry_id}: {err}")
 
     # 建立協調器 (Coordinator)，它會負責定時更新
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name=f"trash_truck_{lineid}",
+        name=f"trash_truck_{entry_id}",
         update_method=async_update_data,
         update_interval=timedelta(seconds=update_interval),
     )

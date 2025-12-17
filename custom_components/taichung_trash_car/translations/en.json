@@ -3,9 +3,10 @@
     "step": {
       "user": {
         "title": "Taichung Trash Truck Tracker Setup",
-        "description": "Enter the Line ID of the trash truck route and your home location.",
+        "description": "Enter the Line ID or Plate Number (choose one) of the trash truck route, and your home location.",
         "data": {
           "lineid": "Line ID",
+          "plate_n": "Plate Number",
           "home_lat": "Home Latitude",
           "home_lon": "Home Longitude",
           "update_interval": "Update Interval (seconds)"
@@ -16,9 +17,28 @@
       "already_configured": "This route is already configured"
     },
     "error": {
+      "line_id_or_plate_n": "You must provide either a Line ID or a Plate Number, but not both.",
       "cannot_connect": "Failed to connect to API",
       "invalid_auth": "Authentication failed",
       "unknown": "Unknown error"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Update Settings",
+        "description": "Enter the Line ID or Plate Number (choose one) of the trash truck route, and your home location.",
+        "data": {
+          "lineid": "Line ID",
+          "plate_n": "Plate Number",
+          "home_lat": "Home Latitude",
+          "home_lon": "Home Longitude",
+          "update_interval": "Update Interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "line_id_or_plate_n": "You must provide either a Line ID or a Plate Number, but not both."
     }
   }
 }

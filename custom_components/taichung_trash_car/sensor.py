@@ -6,7 +6,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import location as ha_location
 
-from .const import DOMAIN, CONF_LINEID, CONF_HOME_LAT, CONF_HOME_LON
+from .const import DOMAIN, CONF_LINEID, CONF_PLATE_N, CONF_HOME_LAT, CONF_HOME_LON
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -38,7 +38,8 @@ class TrashTruckLocationSensor(CoordinatorEntity, SensorEntity):
     @property
     def name(self) -> str:
         """Return the name of the sensor."""
-        return f"垃圾車 {self._config.get(CONF_LINEID)} 位置"
+        name_id = self._config.get(CONF_LINEID) or self._config.get(CONF_PLATE_N)
+        return f"垃圾車 {name_id} 位置"
 
     @property
     def state(self):
@@ -84,7 +85,8 @@ class TrashTruckDistanceSensor(CoordinatorEntity, SensorEntity):
     @property
     def name(self) -> str:
         """Return the name of the sensor."""
-        return f"垃圾車 {self._config.get(CONF_LINEID)} 距離"
+        name_id = self._config.get(CONF_LINEID) or self._config.get(CONF_PLATE_N)
+        return f"垃圾車 {name_id} 距離"
 
     @property
     def native_value(self):
