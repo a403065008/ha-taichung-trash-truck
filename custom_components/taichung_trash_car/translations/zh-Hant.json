@@ -6,7 +6,7 @@
         "description": "請輸入您要追蹤的垃圾車路線 ID 或車牌號碼（二擇一），及家中位置。",
         "data": {
           "lineid": "路線 ID (LineID)",
-          "plate_n": "車牌號碼",
+          "plate_n": "車牌",
           "home_lat": "家中緯度",
           "home_lon": "家中經度",
           "update_interval": "更新間隔 (秒)"
@@ -30,7 +30,7 @@
         "description": "請輸入您要追蹤的垃圾車路線 ID 或車牌號碼（二擇一），及家中位置。",
         "data": {
           "lineid": "路線 ID (LineID)",
-          "plate_n": "車牌號碼",
+          "plate_n": "車牌",
           "home_lat": "家中緯度",
           "home_lon": "家中經度",
           "update_interval": "更新間隔 (秒)"
